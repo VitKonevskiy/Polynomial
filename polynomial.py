@@ -1,38 +1,41 @@
 class Polynomial:
-    def __init__(self, coeffList: list):
-        if not coeffList:
+    def __init__(self, arg):
+
+        if isinstance(arg, Polynomial):
+            self.coeffs = arg.coeffs.copy()
+        elif not arg:
             raise TypeError()
-        for item in coeffList:
-            if not isinstance(item,int):
-                raise TypeError()
+        else:
+            for item in arg:
+                if not isinstance(item, int):
+                    raise TypeError()
 
-        self.coeffList = coeffList
+            self.coeffs = arg
+#           remove redundant 0
+            while self.coeffs[0] == 0 and len(self.coeffs) > 1:
+                del self.coeffs[0]
 
-#       remove redundant 0
-        while self.coeffList[0] == 0 and len(self.coeffList) > 1:
-            del self.coeffList[0]
+    def _getSize(self):
+        return len(self.coeffs)
 
-    def _getSize(self) -> int:
-        return len(self.coeffList)
-
-    def _getMonomCoef(self, monomDegree: int) -> int:
-        return self.coeffList[monomDegree]
+    def _getMonomCoef(self, monomDegree):
+        return self.coeffs[monomDegree]
 
     def _changeSigns(self):
-        for i in range(0, len(self.coeffList)):
-            self.coeffList[i] *= -1
+        for i in range(0, len(self.coeffs)):
+            self.coeffs[i] *= -1
         return self
 
-    def toString(self) -> str:
+    def toString(self):
 
         resultStr = ''
         isFirst = True
-        degree = len(self.coeffList) - 1
-        if len(self.coeffList)==1 and self.coeffList[0] == 0:
+        degree = len(self.coeffs) - 1
+        if len(self.coeffs) == 1 and self.coeffs[0] == 0:
             resultStr = '0'
-        for item in self.coeffList:
+        for item in self.coeffs:
             if item != 0:
-                # Определяем и пишем в строку знак текущего монома
+                # Detect and write into resultStr sign of current monom
                 if isFirst:
                     if item < 0:
                         resultStr += '- '
@@ -41,8 +44,12 @@ class Polynomial:
                 absValue = abs(item)
 
                 if degree > 0:
-                    resultStr += '{0}x^{1}'.format(absValue if absValue > 1 else '',
-                                                   degree) if degree > 1 else '{0}x'.format(absValue)
+                    if degree > 1:
+                        resultStr += '{0}x^{1}'.format(absValue if absValue > 1 else '', degree)
+                    else:
+                        resultStr += '{0}x'.format(absValue if absValue > 1 else '')
+                    # resultStr += '{0}x^{1}'.format(absValue if absValue > 1 else '',
+                    #                                degree) if degree > 1 else '{0}x'.format(absValue)
                 else:
                     resultStr += '{0}'.format(absValue)
                 isFirst = False
@@ -50,7 +57,7 @@ class Polynomial:
         return resultStr
 
     def printInternalView(self):
-        return '{0}({1})'.format(self.__class__.__name__, self.coeffList)
+        return '{0}({1})'.format(self.__class__.__name__, self.coeffs)
 
     def __str__(self):
         return self.toString()
@@ -61,7 +68,7 @@ class Polynomial:
             newCoeff = list()
             if self._getSize() >= other._getSize():
                 # self is bigger
-                newCoeff.extend(self.coeffList)
+                newCoeff.extend(self.coeffs)
                 i = 0
                 while i < other._getSize():
                     index = -1 - i
@@ -70,7 +77,7 @@ class Polynomial:
 
             else:
                 # other is bigger
-                newCoeff.extend(other.coeffList)
+                newCoeff.extend(other.coeffs)
                 i = 0
                 while i < self._getSize():
                     index = -1 - i
@@ -83,7 +90,7 @@ class Polynomial:
 
             result = Polynomial(newCoeff)
         elif isinstance(other, int):
-            result = self.coeffList.copy()
+            result = self.coeffs.copy()
             result[-1] = result[-1] + other
             result = Polynomial(result)
         else:
@@ -94,7 +101,7 @@ class Polynomial:
     def __sub__(self, other):
         secondArg = None
         if isinstance(other, Polynomial):
-            secondArg = Polynomial(other.coeffList.copy())
+            secondArg = Polynomial(other.coeffs.copy())
             secondArg._changeSigns()
         elif isinstance(other, int):
             secondArg = other * (-1)
@@ -116,8 +123,8 @@ class Polynomial:
             for i in range(0, newSize):
                 resultList.append(0)
 
-            for i in range(0, len(self.coeffList)):
-                for j in range(0, len(other.coeffList)):
+            for i in range(0, len(self.coeffs)):
+                for j in range(0, len(other.coeffs)):
                     selfDegree = self._getSize() - i - 1
                     otherDegree = other._getSize() - j - 1
 
@@ -126,12 +133,12 @@ class Polynomial:
                     resultList[newSize - 1 - currDegree] = resultList[newSize - 1 - currDegree] + self._getMonomCoef(
                         i) * other._getMonomCoef(j)
 
-            # Удаляем лишние нули
+            # Remove redundant zeroes
             while resultList[0] == 0 and len(resultList) > 1:
                 del resultList[0]
             result = Polynomial(resultList)
         elif isinstance(other, int):
-            result = self.coeffList.copy()
+            result = self.coeffs.copy()
             for i in range(0, len(result)):
                 result[i] = result[i] * other
             result = Polynomial(result)
@@ -141,8 +148,8 @@ class Polynomial:
 
     def __eq__(self, other):
         if isinstance(other, Polynomial):
-            return self.coeffList == other.coeffList
+            return self.coeffs == other.coeffs
         elif not (isinstance(other, int)):
             raise TypeError()
         else:
-            return len(self.coeffList) == 1 and self.coeffList[0] == other
+            return len(self.coeffs) == 1 and self.coeffs[0] == other
