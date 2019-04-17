@@ -1,8 +1,11 @@
+import copy
+
+
 class Polynomial:
     def __init__(self, arg):
 
         if isinstance(arg, Polynomial):
-            self.coeffs = arg.coeffs.copy()
+            self.coeffs = copy.deepcopy(arg.coeffs)
         elif not arg:
             raise TypeError()
         else:
@@ -15,19 +18,21 @@ class Polynomial:
             while self.coeffs[0] == 0 and len(self.coeffs) > 1:
                 del self.coeffs[0]
 
-    def _getSize(self):
+    def _get_size(self):
         return len(self.coeffs)
 
-    def _getMonomCoef(self, monomDegree):
-        return self.coeffs[monomDegree]
+    def _get_monom_coeff(self, monom_degree):
+        return self.coeffs[monom_degree]
 
-    def _changeSigns(self):
+    def _change_signs(self):
         for i in range(0, len(self.coeffs)):
             self.coeffs[i] *= -1
         return self
 
-    def toString(self):
+    def print_internal_view(self):
+        return '{0}({1})'.format(self.__class__.__name__, self.coeffs)
 
+    def __str__(self):
         resultStr = ''
         isFirst = True
         degree = len(self.coeffs) - 1
@@ -56,32 +61,26 @@ class Polynomial:
             degree = degree - 1
         return resultStr
 
-    def printInternalView(self):
-        return '{0}({1})'.format(self.__class__.__name__, self.coeffs)
-
-    def __str__(self):
-        return self.toString()
-
     def __add__(self, other):
         result = None
         if isinstance(other, Polynomial):
             newCoeff = list()
-            if self._getSize() >= other._getSize():
+            if self._get_size() >= other._get_size():
                 # self is bigger
                 newCoeff.extend(self.coeffs)
                 i = 0
-                while i < other._getSize():
+                while i < other._get_size():
                     index = -1 - i
-                    newCoeff[index] += other._getMonomCoef(index)
+                    newCoeff[index] += other._get_monom_coeff(index)
                     i = i + 1
 
             else:
                 # other is bigger
                 newCoeff.extend(other.coeffs)
                 i = 0
-                while i < self._getSize():
+                while i < self._get_size():
                     index = -1 - i
-                    newCoeff[index] += self._getMonomCoef(index)
+                    newCoeff[index] += self._get_monom_coeff(index)
                     i = i + 1
 
 #           remove redundant 0
@@ -90,7 +89,7 @@ class Polynomial:
 
             result = Polynomial(newCoeff)
         elif isinstance(other, int):
-            result = self.coeffs.copy()
+            result = copy.deepcopy(self.coeffs)
             result[-1] = result[-1] + other
             result = Polynomial(result)
         else:
@@ -101,8 +100,8 @@ class Polynomial:
     def __sub__(self, other):
         secondArg = None
         if isinstance(other, Polynomial):
-            secondArg = Polynomial(other.coeffs.copy())
-            secondArg._changeSigns()
+            secondArg = Polynomial(copy.deepcopy(other.coeffs))
+            secondArg._change_signs()
         elif isinstance(other, int):
             secondArg = other * (-1)
         else:
@@ -118,27 +117,27 @@ class Polynomial:
     def __mul__(self, other):
         result = None
         if isinstance(other, Polynomial):
-            newSize = (self._getSize() - 1) * (other._getSize() - 1) + 2
+            newSize = (self._get_size() - 1) * (other._get_size() - 1) + 2
             resultList = list()
             for i in range(0, newSize):
                 resultList.append(0)
 
             for i in range(0, len(self.coeffs)):
                 for j in range(0, len(other.coeffs)):
-                    selfDegree = self._getSize() - i - 1
-                    otherDegree = other._getSize() - j - 1
+                    selfDegree = self._get_size() - i - 1
+                    otherDegree = other._get_size() - j - 1
 
                     currDegree = selfDegree + otherDegree
 
-                    resultList[newSize - 1 - currDegree] = resultList[newSize - 1 - currDegree] + self._getMonomCoef(
-                        i) * other._getMonomCoef(j)
+                    resultList[newSize - 1 - currDegree] = resultList[newSize - 1 - currDegree] + self._get_monom_coeff(
+                        i) * other._get_monom_coeff(j)
 
             # Remove redundant zeroes
             while resultList[0] == 0 and len(resultList) > 1:
                 del resultList[0]
             result = Polynomial(resultList)
         elif isinstance(other, int):
-            result = self.coeffs.copy()
+            result = copy.deepcopy(self.coeffs)
             for i in range(0, len(result)):
                 result[i] = result[i] * other
             result = Polynomial(result)

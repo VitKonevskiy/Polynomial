@@ -72,6 +72,8 @@ class PolynomialTests(unittest.TestCase):
         p = Polynomial([1, -1, 1])
         s = Polynomial([-1, 1])
         self.assertEqual((p * s).coeffs, [-1, 2, -2, 1])
+        self.assertEqual(p.coeffs, [1, -1, 1])
+        self.assertEqual(s.coeffs, [-1, 1])
 
     def test_mult_zero(self):
         p = Polynomial([1, -1, 1])
@@ -105,7 +107,7 @@ class PolynomialTests(unittest.TestCase):
         self.assertEqual(str(p), "- x^2 + 4x - 1")
         p = Polynomial([-1, 4, -1, 5, 1, 2, -5])
         print(str(p))
-        self.assertEqual(str(p), "- x^5 - x^4 + 5x^3 + x^2 + 2x - 5")
+        self.assertEqual(str(p), "- x^6 + 4x^5 - x^4 + 5x^3 + x^2 + 2x - 5")
 
     def test_equal_int(self):
         p = Polynomial([1, 4, 6])
@@ -120,19 +122,20 @@ class PolynomialTests(unittest.TestCase):
 
     def test_print_internal_view(self):
         p = Polynomial([-1, -2, 0])
-        self.assertEqual(p.printInternalView(), "Polynomial([-1, -2, 0])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([-1, -2, 0])")
         p = Polynomial([-1, -4, -4])
-        self.assertEqual(p.printInternalView(), "Polynomial([-1, -4, -4])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([-1, -4, -4])")
         p = Polynomial([0])
-        self.assertEqual(p.printInternalView(), "Polynomial([0])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([0])")
         p = Polynomial([0, 0, 0])
-        self.assertEqual(p.printInternalView(), "Polynomial([0])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([0])")
         p = Polynomial([1, 4, 9])
-        self.assertEqual(p.printInternalView(), "Polynomial([1, 4, 9])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([1, 4, 9])")
         p = Polynomial([1, 0, 4])
-        self.assertEqual(p.printInternalView(), "Polynomial([1, 0, 4])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([1, 0, 4])")
         p = Polynomial([-1, 4, -7])
-        self.assertEqual(p.printInternalView(), "Polynomial([-1, 4, -7])")
+        self.assertEqual(p.print_internal_view(), "Polynomial([-1, 4, -7])")
+
 
 if __name__ == '__main__':
     unittest.main()
