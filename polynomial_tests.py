@@ -106,7 +106,6 @@ class PolynomialTests(unittest.TestCase):
         p = Polynomial([-1, 4, -1])
         self.assertEqual(str(p), "- x^2 + 4x - 1")
         p = Polynomial([-1, 4, -1, 5, 1, 2, -5])
-        print(str(p))
         self.assertEqual(str(p), "- x^6 + 4x^5 - x^4 + 5x^3 + x^2 + 2x - 5")
 
     def test_equal_int(self):
