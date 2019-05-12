@@ -29,7 +29,7 @@ class Polynomial:
             self.coeffs[i] *= -1
         return self
 
-    def print_internal_view(self):
+    def __repr__(self):
         return '{0}({1})'.format(self.__class__.__name__, self.coeffs)
 
     def __str__(self):
@@ -152,3 +152,6 @@ class Polynomial:
             raise TypeError()
         else:
             return len(self.coeffs) == 1 and self.coeffs[0] == other
+
+    def __ne__(self, other):
+        return not self == other

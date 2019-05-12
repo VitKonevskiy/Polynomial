@@ -121,19 +121,26 @@ class PolynomialTests(unittest.TestCase):
 
     def test_print_internal_view(self):
         p = Polynomial([-1, -2, 0])
-        self.assertEqual(p.print_internal_view(), "Polynomial([-1, -2, 0])")
+        self.assertEqual(repr(p), "Polynomial([-1, -2, 0])")
         p = Polynomial([-1, -4, -4])
-        self.assertEqual(p.print_internal_view(), "Polynomial([-1, -4, -4])")
+        self.assertEqual(repr(p), "Polynomial([-1, -4, -4])")
         p = Polynomial([0])
-        self.assertEqual(p.print_internal_view(), "Polynomial([0])")
+        self.assertEqual(repr(p), "Polynomial([0])")
         p = Polynomial([0, 0, 0])
-        self.assertEqual(p.print_internal_view(), "Polynomial([0])")
+        self.assertEqual(repr(p), "Polynomial([0])")
         p = Polynomial([1, 4, 9])
-        self.assertEqual(p.print_internal_view(), "Polynomial([1, 4, 9])")
+        self.assertEqual(repr(p), "Polynomial([1, 4, 9])")
         p = Polynomial([1, 0, 4])
-        self.assertEqual(p.print_internal_view(), "Polynomial([1, 0, 4])")
+        self.assertEqual(repr(p), "Polynomial([1, 0, 4])")
         p = Polynomial([-1, 4, -7])
-        self.assertEqual(p.print_internal_view(), "Polynomial([-1, 4, -7])")
+        self.assertEqual(repr(p), "Polynomial([-1, 4, -7])")
+
+    def test_double_negation(self):
+        p = Polynomial([-1, -2, 0])
+        p1 = Polynomial([-1, -4, -4])
+        self.assertFalse(p == p1)
+        self.assertTrue(p != p1)
+        self.assertFalse(not (p != p1))
 
 
 if __name__ == '__main__':
